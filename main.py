@@ -1,89 +1,37 @@
-import random
 import requests
+import string
+import random
+from time import sleep
 
-words = [
-    "Eagle", "Lion", "Tiger", "Wolf", "Dragon", "Phoenix", "Shark", "Falcon", 
-    "Bear", "Hawk", "Panda", "Cheetah", "Otter", "Jaguar", "Dolphin", "Rhino", 
-    "Whale", "Giraffe", "Elephant", "Buffalo", "Fox", "Viper", "Grizzly", "Bison",
-    "Cobra", "Seal", "Sparrow", "Raven", "Parrot", "Lynx", "Hedgehog", "Tortoise",
-    "Antelope", "Kangaroo", "Koala", "Sloth", "Crab", "Octopus", "Lizard", "Chameleon",
-    "Wolverine", "Puma", "Iguana", "Ocelot", "Buffalo", "Mongoose", "Swan", "Pelican",
-    "Gazelle", "Armadillo", "Walrus", "Narwhal", "Capybara", "Cheetah", "Toad", "Gecko",
-    "Tapir", "Porcupine", "Manatee", "Aardvark", "Pangolin", "Emu", "Llama", "Yak",
-    "Sloth", "Flamingo", "Macaw", "Ostrich", "Quokka", "Tarantula", "Frog", "Newt",
-    "Wombat", "Zebra", "Koi", "Seahorse", "Goldfish", "Pufferfish", "Angelfish", 
-    "Crane", "Heron", "Vulture", "Condor", "Buffalo", "Tapir", "Chinchilla", "Ape",
-    "Hummingbird", "Mynah", "Platypus", "Raccoon", "Kookaburra", "Armadillo", "Dingo"
-]
-
-adjectives = [
-    "Swift", "Brave", "Mighty", "Clever", "Bold", "Fierce", "Wise", "Gentle", 
-    "Loyal", "Noble", "Fearless", "Daring", "Radiant", "Savage", "Graceful", 
-    "Tenacious", "Vigorous", "Charming", "Astute", "Valiant", "Dynamic", 
-    "Inventive", "Impressive", "Dazzling", "Heroic", "Luminous", "Bold", 
-    "Courageous", "Witty", "Sly", "Eloquent", "Artistic", "Creative", 
-    "Fearsome", "Majestic", "Zany", "Epic", "Proud", "Nimble", "Gallant", 
-    "Humble", "Sincere", "Eager", "Sassy", "Unique", "Whimsical", 
-    "Spirited", "Zealous", "Funky", "Groovy", "Radiant", "Dapper", 
-    "Astounding", "Enchanting", "Fearless", "Lively", "Persuasive", 
-    "Curious", "Affectionate", "Hilarious", "Dashing", "Charming", 
-    "Magnificent", "Bubbly", "Exuberant", "Inspiring", "Passionate", 
-    "Adventurous", "Diligent", "Playful", "Innovative", "Respectful", 
-    "Optimistic", "Sincere", "Joyful", "Benevolent", "Thoughtful", 
-    "Polished", "Fearless", "Brilliant", "Fulfilling", "Magnificent", 
-    "Sublime", "Valorous", "Intrepid", "Enthusiastic", "Exciting", 
-    "Incredible", "Outstanding", "Radiant", "Vibrant", "Playful", 
-    "Challenging", "Spectacular", "Dynamic", "Energetic", "Intelligent"
-]
-
-def generate_username(custom_word=None):
-    if custom_word:
-        position = random.choice(['before', 'after'])
-        if position == 'before':
-            username = f"{custom_word}{random.choice(words)}"
-        else:
-            username = f"{random.choice(words)}{custom_word}"
-    else:
-        if random.choice([True, False]):
-            username = f"{random.choice(adjectives)}"
-        else:
-            username = f"{random.choice(words)}"
-
-    if random.choice([True, False]):
-        number = random.randint(0, 999)
-        username += f"_{number:03d}"
-
-    if len(username) > 20:
-        username = username[:20]
-
-    return username
-
-def check_username_availability(username):
-    url = f"https://api.github.com/users/{username}"
+def check_username(username):
+    url = f'https://www.roblox.com/SignUp/UsernameAvailability?username={username}'
     response = requests.get(url)
-    return response.status_code == 404
+    
+    # Check if the response indicates the username is available
+    if response.status_code == 200:
+        if "isAvailable" in response.text and '"isAvailable":true' in response.text:
+            return True
+    return False
 
-def main():
-    print("Random Username Generator")
-    
-    custom_choice = input("Would you like to enter your own word? (yes/no): ").strip().lower()
-    custom_word = None
-    
-    if custom_choice == 'yes':
-        custom_word = input("Enter your custom word: ").strip()
-    
-    usernames = [generate_username(custom_word) for _ in range(10)]
-    print("\nGenerated Usernames:")
-    for i, username in enumerate(usernames, start=1):
-        print(f"{i}. {username}")
+def generate_username():
+    # Generate a random 4-letter username
+    return ''.join(random.choices(string.ascii_lowercase, k=4))
 
-    selected_index = int(input("\nSelect a username by number (1-10): ")) - 1
-    selected_username = usernames[selected_index]
-    
-    if check_username_availability(selected_username):
-        print(f"Username '{selected_username}' is available!")
-    else:
-        print(f"Username '{selected_username}' is taken.")
+def find_available_username():
+    while True:
+        username = generate_username()
+        print(f"Checking username: {username}")
+        
+        if check_username(username):
+            print(f"Found available username: {username}")
+            return username
+        else:
+            print(f"Username {username} is taken.")
+        
+        # Add a small delay to avoid overwhelming Roblox's servers
+        sleep(1)
 
 if __name__ == "__main__":
-    main()
+    print("Starting search for an available 4-letter Roblox username...")
+    available_username = find_available_username()
+    print(f"Available username found: {available_username}")
