@@ -13,7 +13,7 @@ words = [
     "Sloth", "Flamingo", "Macaw", "Ostrich", "Quokka", "Tarantula", "Frog", "Newt",
     "Wombat", "Zebra", "Koi", "Seahorse", "Goldfish", "Pufferfish", "Angelfish", 
     "Crane", "Heron", "Vulture", "Condor", "Buffalo", "Tapir", "Chinchilla", "Ape",
-    "Hummingbird", "Mynah", "Platypus", "Raccoon", "Kookaburra", "Armadillo", "Dingo"
+    "Hummingbird", "Mynah", "Platypus", "Raccoon", "Kookaburra", "Armadillo", "Dingos"
 ]
 
 adjectives = [
